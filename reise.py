@@ -30,8 +30,7 @@ for s in stasjoner:
 
 print ()
 valg = input ("Velg en stasjon: ")
-print (f"du har valgt {valg}")
-print()
+
 print()
 
 if valg not in gyldig: 
@@ -42,7 +41,7 @@ if valg not in gyldig:
 
 stasjon = stasjoner [int(valg) - 1] ["id"]
 navn = stasjoner [int(valg) - 1] ["stasjon"]
-antall = 7
+antall = 10
 
 
 addr = 'https://api.entur.io/journey-planner/v3/graphql'
@@ -100,8 +99,9 @@ r = requests.post(addr, json = {"query": query})
 
 res = r.json()
 print (f"De neste {antall} turene fra {navn}")
-print ("linje     destinasjon          avreise      platform" )
-print ("-----     -----------          -------      --------" )
+print ()
+print ("Linje     Destinasjon               Avreise      Platform" )
+print ("-----     -----------               -------      --------" )
 
 
 trains = res["data"] ["stopPlace"] ["estimatedCalls"] 
@@ -120,8 +120,15 @@ for t in trains :
     dest = t ["destinationDisplay"] ["frontText"] 
     dep = t ["expectedDepartureTime"] 
     plat = t ["quay"] ["publicCode"]
+    nt = datetime.datetime.now(datetime.timezone.utc)
     dt = datetime.datetime.fromisoformat(dep)
-    dd = dt.strftime("%H:%M")
+    delta = int((dt - nt).seconds/60)
+    if delta <= 15 : 
+      dd = f"{delta} min"
+      if delta == 0 : 
+        dd = "nå"
+    else : 
+      dd = dt.strftime("%H:%M")
     farge = l1 
     if linje == "1" : 
       farge = l1 
@@ -135,7 +142,7 @@ for t in trains :
       farge = l5
     
     linje = colorize (f"{linje:9}", rgb = farge)
-    print (f"{linje} {dest:20} {dd:10}   {plat}")
+    print (f"{linje} {dest:25} {dd:10}   {plat}")
  
 
 
