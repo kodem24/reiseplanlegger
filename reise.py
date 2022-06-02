@@ -1,8 +1,53 @@
 
+# stasjonsliste
+# Vettakollen
+# Majorstua
+# Smestad
+# Vestli
+# Ryen
+
+
+
+stasjoner = [
+  {"stasjon": "Vettakollen", "id": 6298},
+  {"stasjon": "Majorstuen", "id": 58381},
+  {"stasjon": "Smestad", "id": 58273},
+  {"stasjon": "Grorud", "id": 58216},
+  {"stasjon": "Helsfyr", "id": 59516},
+]
+
+print()
+print ("Reiseplanlegger")
+print()
+
+i = 1
+gyldig = []
+for s in stasjoner:
+  snavn = s["stasjon"]
+  print (f"  {i}. {snavn}")
+  gyldig.append(str(i))
+  i = i + 1
+
+print ()
+valg = input ("Velg en stasjon: ")
+print (f"du har valgt {valg}")
+print()
+print()
+
+if valg not in gyldig: 
+  print (f"Du må velge et tall mellom 1 og {i-1}")
+  import sys
+  sys.exit()
+
+
+stasjon = stasjoner [int(valg) - 1] ["id"]
+navn = stasjoner [int(valg) - 1] ["stasjon"]
+antall = 7
+
 
 addr = 'https://api.entur.io/journey-planner/v3/graphql'
 #stasjon = 58381
-stasjon = 6298 
+#stasjon = 6298 
 query = """
 {
   stopPlace(
@@ -12,7 +57,7 @@ query = """
     name
     estimatedCalls(
       timeRange: 72100,
-      numberOfDepartures: 5,
+      numberOfDepartures: """ +str (antall) +""",
       whiteListedModes: [metro]
     ) {
       realtime
@@ -54,7 +99,7 @@ import datetime
 r = requests.post(addr, json = {"query": query})
 
 res = r.json()
-print ("de neste 5 turene fra Vettakollen")
+print (f"De neste {antall} turene fra {navn}")
 print ("linje     destinasjon          avreise      platform" )
 print ("-----     -----------          -------      --------" )
 
